@@ -116,9 +116,9 @@
             right: 20px;
         }
         #size-input {
-            bottom: 20px;
-            right: 20px;
-            margin-bottom: 100px;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
         }
         #save-load-panel {
             bottom: 20px;
@@ -250,22 +250,6 @@
         let rulerEnabled = false;
         let rulerPoints = [];
 
-        function checkWindowSize() {
-            const maximizeMessage = document.getElementById('maximize-message');
-            const parkingLot = document.getElementById('parking-lot');
-            const isMaximized = window.innerWidth >= screen.availWidth - 20 && window.innerHeight >= screen.availHeight - 100;
-            if (!isMaximized) {
-                maximizeMessage.style.display = 'block';
-                parkingLot.classList.add('blur');
-            } else {
-                maximizeMessage.style.display = 'none';
-                parkingLot.classList.remove('blur');
-            }
-        }
-
-        window.addEventListener('resize', checkWindowSize);
-        window.addEventListener('load', checkWindowSize);
-
         function createOrUpdateTruck() {
             const width = parseInt(document.getElementById('truck-width').value, 10);
             const length = parseInt(document.getElementById('truck-length').value, 10);
@@ -305,13 +289,11 @@
             newTruck.style.height = (currentSize.height * pixelToFootRatio) + 'px';
             newTruck.style.transform = 'rotate(0deg)'; // Reset rotation
 
-            // Get the position of the size-input box
+            // Place the truck near the size-input box
             const sizeInputBox = document.getElementById('size-input').getBoundingClientRect();
             const parkingLotRect = document.getElementById('parking-lot').getBoundingClientRect();
-
-            // Calculate the new position relative to the size-input box
-            const newLeft = sizeInputBox.left + window.scrollX - parkingLotRect.left;
-            const newTop = sizeInputBox.top + window.scrollY - parkingLotRect.top + sizeInputBox.height + 10; // Add some offset below the size-input box
+            const newLeft = sizeInputBox.left + sizeInputBox.width + 10 - parkingLotRect.left;
+            const newTop = sizeInputBox.top + sizeInputBox.height / 2 - newTruck.offsetHeight / 2 - parkingLotRect.top;
 
             newTruck.style.left = newLeft + 'px';
             newTruck.style.top = newTop + 'px';
@@ -359,8 +341,8 @@
 
             function moveAt(pageX, pageY) {
                 // Calculate new position
-                const newLeft = pageX - parkingLotRect.left - shiftX;
-                const newTop = pageY - parkingLotRect.top - shiftY;
+                let newLeft = pageX - parkingLotRect.left - shiftX;
+                let newTop = pageY - parkingLotRect.top - shiftY;
 
                 // Constrain to parking lot bounds
                 if (newLeft < 0) newLeft = 0;
@@ -530,12 +512,13 @@
 
         function addRulerPoint(event) {
             if (!rulerEnabled) return;
+            const parkingLotRect = document.getElementById('parking-lot').getBoundingClientRect();
             const point = document.createElement('div');
             point.className = 'ruler-point';
-            point.style.left = event.clientX + 'px';
-            point.style.top = event.clientY + 'px';
+            point.style.left = (event.clientX - parkingLotRect.left) + 'px';
+            point.style.top = (event.clientY - parkingLotRect.top) + 'px';
             document.getElementById('parking-lot').appendChild(point);
-            rulerPoints.push({ x: event.clientX, y: event.clientY, element: point });
+            rulerPoints.push({ x: event.clientX - parkingLotRect.left, y: event.clientY - parkingLotRect.top, element: point });
 
             if (rulerPoints.length === 2) {
                 calculateDistance();
