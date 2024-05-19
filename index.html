@@ -11,29 +11,29 @@
             overflow: hidden;
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f4;
-        }
-        #container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+        }
+        #game-container {
+            position: relative;
+            width: 1280px; /* Fixed width for game container */
+            height: 720px; /* Fixed height for game container */
+            background-color: #fff;
+            border: 2px solid #000; /* Add a border to the container */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         #parking-lot {
             position: relative;
-            width: 1920px;
-            height: 1080px;
+            width: 1920px; /* Fixed width for parking lot */
+            height: 1080px; /* Fixed height for parking lot */
             background-image: url('https://static.wixstatic.com/media/18410c_d75797bbf4dc4473968456f7fe765fef~mv2.png');
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
             overflow: hidden;
-        }
-        .blur {
-            filter: blur(5px);
-            pointer-events: none;
         }
         .food-truck {
             position: absolute;
@@ -202,7 +202,7 @@
     <div id="maximize-message">
         Please maximize the window for best results.
     </div>
-    <div id="container">
+    <div id="game-container">
         <div id="parking-lot">
             <!-- Parking lot area -->
         </div>
